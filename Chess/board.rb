@@ -1,5 +1,9 @@
 require_relative 'piece'
 
+PIECE_TYPE = {
+
+}
+
 class Board
   attr_accessor :grid
 
@@ -39,14 +43,42 @@ class Board
   end
 
   def populate_board
-    @grid[0].each_with_index { |tile, i| self[[0, i]] = Piece.new }
+    create_pawn_rows
+    create_back_rows
+  end
+
+  def create_pawn_rows
+    @grid[1].each_index do |i|
+      self[[1, i]] = create_new_piece([1, i], :p)
+    end
+    @grid[6].each_index do |i|
+      self[[6, i]] = create_new_piece([6, i], :p)
+    end
+  end
+
+  def create_back_rows
+    [:r, :h, :b, :q, :k, :b, :h, :r].each_with_index do |piece, i|
+      self[[0, i]] = create_new_piece([0, i], piece)
+      self[[7, i]] = create_new_piece([7, i], piece)
+    end
+  end
+
+  def create_new_piece(pos, symbol)
+    case symbol
+    when :r, :b, :q
+      SlidingPiece.new(pos, self, symbol)
+    when :h
+    when :k
+    when :p
+      Pawn.new(pos, self, symbol)
+    end
+
   end
 
 end
 
-
-a = Board.new
-# pa.grid
-# p a.move([0,0], [2,0])
-# p a[[0,0]]
-# p a[[2,0]]
+b = Board.new
+pos = [4,4]
+sp = SlidingPiece.new(pos, b)
+p sp.hor_and_ver_moves
+p sp.hor_and_ver_moves.length

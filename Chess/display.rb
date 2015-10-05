@@ -32,10 +32,15 @@ class Display
     new_row = ""
     row.each_with_index do |tile, idx2|
       color_options = colors_for(idx1, idx2)
-      new_row << "   ".to_s.colorize(color_options)
+      if tile.nil?
+        new_row << "   ".to_s.colorize(color_options)
+      else
+        new_row << " #{tile.type} ".to_s.colorize(color_options)
+      end
     end
     new_row
   end
+
 
 
   def colors_for(idx1, idx2)
