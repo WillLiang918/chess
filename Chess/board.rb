@@ -43,6 +43,6 @@ end
 
 a = Board.new
 # pa.grid
-p a.move([0,0], [2,0])
-p a[[0,0]]
-p a[[2,0]]
+# p a.move([0,0], [2,0])
+# p a[[0,0]]
+# p a[[2,0]]
