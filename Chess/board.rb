@@ -19,7 +19,11 @@ class Board
   end
 
   def valid_move?(start, end_pos)
-    end_pos.all? do |coordinate|
+    self.in_bounds?(end_pos)
+  end
+
+  def in_bounds?(pos)
+    pos.all? do |coordinate|
       coordinate >= 0 && coordinate < self.grid.length
     end
   end
