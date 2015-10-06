@@ -15,7 +15,7 @@ class Display
   end
 
   def render
-    system("clear")
+    # system("clear")
     grid = build_grid(self.board)
     grid.each { |row| puts row }
   end
@@ -67,18 +67,23 @@ class Display
     case keystroke
     when :space, :return
 
-      # if cursor pos contains object and selected_obj.nil?
+      p !self.board[self.cursor].nil?
+      p self.selected_piece.nil?
+
       if !self.board[self.cursor].nil? && self.selected_piece.nil?
+
         p "1"
 
-        self.selected_piece == self.board[self.cursor]
+        self.selected_piece = self.board[self.cursor]
 
 
       elsif !self.selected_piece.nil?
         p "2"
 
-        self.board[self.cursor] = self.board[self.selected_piece.pos]
+        # temp_piece = selected_piece.dup
         self.board[self.selected_piece.pos] = nil
+        self.board[self.cursor] = self.selected_piece
+
         self.selected_piece = nil
       end
 
@@ -97,6 +102,8 @@ b = Board.new
 d = Display.new(b)
 
 pos = [2,2]
+p b.white_pieces.each { |n| print n.class}
+p b.white_pieces.length
 # k = King.new(pos, b, :k, :white)
 # p k.moves
 
@@ -104,7 +111,7 @@ pos = [2,2]
 # pawn = Pawn.new(pos, b, :p, :black)
 # p pawn.moves
 
-# d.render
+d.render
 
 # pos2 = [4,4]
 # q = Queen.new(pos2, b, :q, :black)
@@ -124,9 +131,12 @@ pos = [2,2]
 #p horse.moves
 # p horse.moves.length
 
-
+#
 10.times do
   d.render
   d.get_keystroke
   puts "\n"
 end
+#
+# p d.board.white_king.pos
+# p b.black_king.pos

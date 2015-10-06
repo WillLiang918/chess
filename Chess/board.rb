@@ -5,10 +5,12 @@ PIECE_TYPE = {
 }
 
 class Board
-  attr_accessor :grid
+  attr_accessor :grid, :white_king, :black_king, :white_pieces, :black_pieces
 
   def initialize
     @grid = Array.new(8) { Array.new(8) }
+    @white_pieces = []
+    @black_pieces = []
     populate_board
   end
 
@@ -23,8 +25,21 @@ class Board
   end
 
   def in_check?(color)
-    
 
+    if color == :black
+      self.white_pieces.each do |piece|
+        current_moves = piece.moves
+        return true if current_moves.include?(self.black_king.pos)
+      end
+      
+    else
+      self.black_pieces.each do |piece|
+        current_moves = piece.moves
+        return true if current_moves.include?(self.white_king.pos)
+      end
+    end
+
+    false
   end
 
 
@@ -58,17 +73,28 @@ class Board
 
   def create_pawn_rows
     @grid[1].each_index do |i|
-      self[[1, i]] = create_new_piece([1, i], :p)
+      new_pawn = create_new_piece([1, i], :p)
+      self[[1, i]] = new_pawn
+      self.white_pieces << new_pawn
     end
     @grid[6].each_index do |i|
-      self[[6, i]] = create_new_piece([6, i], :p, :black)
+      new_pawn = create_new_piece([6, i], :p, :black)
+      self[[6, i]] = new_pawn
+      self.black_pieces << new_pawn
     end
   end
 
   def create_back_rows
     [:r, :h, :b, :q, :k, :b, :h, :r].each_with_index do |piece, i|
-      self[[0, i]] = create_new_piece([0, i], piece)
-      self[[7, i]] = create_new_piece([7, i], piece, :black)
+
+      new_piece = create_new_piece([0, i], piece)
+      self[[0, i]] = new_piece
+      self.white_pieces << new_piece
+
+      nnew_piece = create_new_piece([7, i], piece, :black)
+      self[[7, i]] = new_piece
+      self.black_pieces << new_piece
+
     end
   end
 
@@ -83,11 +109,13 @@ class Board
     when :h
       Knight.new(pos, self, symbol, color)
     when :k
-      King.new(pos, self, symbol, color)
+      if color == :black
+        self.black_king = King.new(pos, self, symbol, color)
+      else
+        self.white_king = King.new(pos, self, symbol, color)
+      end
     when :p
       Pawn.new(pos, self, symbol, color)
     end
-
   end
-
 end
