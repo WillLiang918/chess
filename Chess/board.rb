@@ -22,6 +22,15 @@ class Board
     true
   end
 
+  def in_check?(color)
+    
+
+  end
+
+
+  def checkmate?
+  end
+
   def valid_move?(start, end_pos)
     self.in_bounds?(end_pos)
   end
@@ -52,31 +61,31 @@ class Board
       self[[1, i]] = create_new_piece([1, i], :p)
     end
     @grid[6].each_index do |i|
-      self[[6, i]] = create_new_piece([6, i], :p)
+      self[[6, i]] = create_new_piece([6, i], :p, :black)
     end
   end
 
   def create_back_rows
     [:r, :h, :b, :q, :k, :b, :h, :r].each_with_index do |piece, i|
       self[[0, i]] = create_new_piece([0, i], piece)
-      self[[7, i]] = create_new_piece([7, i], piece)
+      self[[7, i]] = create_new_piece([7, i], piece, :black)
     end
   end
 
-  def create_new_piece(pos, symbol)
+  def create_new_piece(pos, symbol, color = :white)
     case symbol
     when :r
-      Rook.new(pos, self, symbol)
+      Rook.new(pos, self, symbol, color)
     when :b
-      Bishop.new(pos, self, symbol)
+      Bishop.new(pos, self, symbol, color)
     when :q
-      Queen.new(pos, self, symbol)
+      Queen.new(pos, self, symbol, color)
     when :h
-      Knight.new(pos, self, symbol)
+      Knight.new(pos, self, symbol, color)
     when :k
-      King.new(pos, self, symbol)
+      King.new(pos, self, symbol, color)
     when :p
-      Pawn.new(pos, self, symbol)
+      Pawn.new(pos, self, symbol, color)
     end
 
   end

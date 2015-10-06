@@ -193,6 +193,21 @@ class Pawn < Piece
       possible_moves << new_pos
     end
 
+    if self.color == :black
+      capture_moves = [DIAG_MOVES[:ne], DIAG_MOVES[:nw]]
+    else
+      capture_moves = [DIAG_MOVES[:se], DIAG_MOVES[:sw]]
+    end
+
+    capture_moves.each do |move|
+      new_pos = [self.pos[0] + move[0], self.pos[1] + move[1]]
+      new_tile = self.board[new_pos]
+
+      if self.board.in_bounds?(new_pos) && !new_tile.nil? && new_tile.color != self.color
+        possible_moves << new_pos
+      end
+
+    end
 
     possible_moves
   end
