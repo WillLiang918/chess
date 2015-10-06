@@ -75,11 +75,34 @@ class Display
 end
 
 
-a = Board.new
-b = Display.new(a)
+b = Board.new
+d = Display.new(b)
 
-while true
-  b.render
-  b.get_keystroke
-  puts "\n"
-end
+pos = [3,2]
+# k = King.new(pos, b, :k, :white)
+# p k.moves
+
+horse = Knight.new(pos, b, :h, :white)
+p horse.moves
+p horse.moves.length
+
+# pos2 = [4,4]
+# q = Queen.new(pos2, b, :q, :black)
+# bi = Bishop.new(pos, b, :q, :black)
+# r = Rook.new(pos, b, :q, :black)
+#
+# b[pos] = r
+# b[pos2] = q
+# d.render
+#
+# p "Rook: #{r.moves}"
+# puts
+# p "Queen: #{q.moves}"
+# p r.moves.length
+# p q.moves.length
+#
+# while true
+#   b.render
+#   b.get_keystroke
+#   puts "\n"
+# end

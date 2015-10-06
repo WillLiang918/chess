@@ -65,10 +65,16 @@ class Board
 
   def create_new_piece(pos, symbol)
     case symbol
-    when :r, :b, :q
-      SlidingPiece.new(pos, self, symbol)
+    when :r
+      Rook.new(pos, self, symbol)
+    when :b
+      Bishop.new(pos, self, symbol)
+    when :q
+      Queen.new(pos, self, symbol)
     when :h
+      Knight.new(pos, self, symbol)
     when :k
+      King.new(pos, self, symbol)
     when :p
       Pawn.new(pos, self, symbol)
     end
@@ -76,9 +82,3 @@ class Board
   end
 
 end
-
-b = Board.new
-pos = [4,4]
-sp = SlidingPiece.new(pos, b)
-p sp.hor_and_ver_moves
-p sp.hor_and_ver_moves.length

@@ -29,22 +29,16 @@ class Manager < Employee
   end
 
   def bonus(multiplier)
-    #return self.salary unless self.is_a?(Manager)
+    total_bonus = 0
 
-    subordinates_salaries = 0
-    low_level_bonus = 0
-
-    employees.each do |employee|
-      # subordinates_salaries += employee.bonus(multiplier)
+    self.employees.each do |employee|
+      total_bonus += employee.salary * multiplier
       if employee.is_a?(Manager)
-        subordinates_salaries += employee.salary
-        subordinates_salaries += employee.bonus(multiplier)
-      else
-        low_level_bonus += employee.bonus(multiplier)
+        total_bonus += employee.bonus(multiplier)
       end
-      
     end
-    subordinates_salaries * multiplier + low_level_bonus
+
+    total_bonus
   end
 end
 

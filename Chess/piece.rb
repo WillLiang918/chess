@@ -1,6 +1,6 @@
 class Piece
 
-  attr_accessor :pos, :board, :type
+  attr_accessor :pos, :board, :type, :color
 
   HOR_AND_VER_MOVES = {
     left: [0, -1],
@@ -16,10 +16,13 @@ class Piece
     ne: [-1, 1]
   }
 
-  def initialize(pos, board, type = nil)
+
+
+  def initialize(pos, board, type = nil, color = :white)
     @pos = pos
     @board = board
     @type = type
+    @color = color
   end
 
   def moves
@@ -34,10 +37,6 @@ class SlidingPiece < Piece
   # end
 
   def moves
-    possible_moves = []
-    linear_moves = hor_and_ver_moves
-    diagonal_moves = diag_moves
-    possible_moves
   end
 
   def hor_and_ver_moves
@@ -45,9 +44,12 @@ class SlidingPiece < Piece
     HOR_AND_VER_MOVES.each do |direction, diff|
       i = 0
       new_pos = [self.pos[0] + diff[0], self.pos[1] + diff[1]]
+      new_tile = self.board[new_pos]
 
-      while self.board.in_bounds?(new_pos)
+      while self.board.in_bounds?(new_pos) && (new_tile.nil? || new_tile.color != self.color)
         possible_moves << new_pos
+        break unless new_tile.nil?
+
         i += 1
         case direction
         when :left
@@ -59,6 +61,8 @@ class SlidingPiece < Piece
         when :down
           new_pos = [self.pos[0] + diff[0] + i, self.pos[1] + diff[1]]
         end
+
+        new_tile = self.board[new_pos]
       end
     end
     possible_moves
@@ -69,9 +73,12 @@ class SlidingPiece < Piece
     DIAG_MOVES.each do |direction, diff|
       i = 0
       new_pos = [self.pos[0] + diff[0], self.pos[1] + diff[1]]
+      new_tile = self.board[new_pos]
 
-      while self.board.in_bounds?(new_pos)
+      while self.board.in_bounds?(new_pos) && (new_tile.nil? || new_tile.color != self.color)
         possible_moves << new_pos
+        break unless new_tile.nil?
+
         i += 1
         case direction
         when :ne
@@ -83,15 +90,111 @@ class SlidingPiece < Piece
         when :se
           new_pos = [self.pos[0] + diff[0] + i, self.pos[1] + diff[1] + i]
         end
+        new_tile = self.board[new_pos]
       end
+
     end
     possible_moves
   end
 
 end
 
+class King < Piece
+
+  def moves
+    possible_moves = []
+    all_directions = HOR_AND_VER_MOVES.merge(DIAG_MOVES)
+    all_directions.each do |direction, diff|
+      new_pos = [self.pos[0] + diff[0], self.pos[1] + diff[1]]
+      new_tile = self.board[new_pos]
+
+      if self.board.in_bounds?(new_pos) && (new_tile.nil? || new_tile.color != self.color)
+        possible_moves << new_pos
+      end
+
+    end
+    possible_moves
+  end
+end
+
+class Knight < Piece
+
+  KNIGHT_MOVES = [
+    [-2, 1],
+    [-1, 2],
+    [1, 2],
+    [2, 1],
+    [2, -1],
+    [1, -2],
+    [-1, -2],
+    [-2, -1]
+  ]
+
+  def moves
+    possible_moves = []
+
+    KNIGHT_MOVES.each do |diff|
+      new_pos = [self.pos[0] + diff[0], self.pos[1] + diff[1]]
+      new_tile = self.board[new_pos]
+
+      if self.board.in_bounds?(new_pos) && (new_tile.nil? || new_tile.color != self.color)
+        possible_moves << new_pos
+      end
+    end
+
+    possible_moves
+  end
+end
+
+class Queen < SlidingPiece
+
+  def moves
+    possible_moves = []
+    possible_moves += hor_and_ver_moves
+    possible_moves += diag_moves
+    possible_moves
+  end
+end
+
+class Rook < SlidingPiece
+
+  def moves
+    possible_moves = []
+    possible_moves += hor_and_ver_moves
+    possible_moves
+  end
+end
+
+class Bishop < SlidingPiece
+
+  def moves
+    possible_moves = []
+    possible_moves += diag_moves
+    possible_moves
+  end
+end
+
 
 class Pawn < Piece
 
+  def moves
+    possible_moves = []
+
+    if self.color == :black
+      forward_move = HOR_AND_VER_MOVES[:up]
+    else
+      forward_move = HOR_AND_VER_MOVES[:down]
+    end
+
+    new_pos = [self.pos[0] + forward_move[0], self.pos[1] + forward_move[1]]
+    new_tile = self.board[new_pos]
+
+    if self.board.in_bounds?(new_pos) && new_tile.nil?
+      possible_moves << new_pos
+    end
+
+
+    possible_moves
+  end
 
 end
