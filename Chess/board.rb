@@ -1,17 +1,18 @@
 require_relative 'piece'
-
-PIECE_TYPE = {
-
-}
+require 'byebug'
 
 class Board
-  attr_accessor :grid, :white_king, :black_king, :white_pieces, :black_pieces
+  attr_accessor :grid, :white_king, :black_king, :white_pieces, :black_pieces,
+                :current_piece, :old_position, :new_position, :replaced_piece, :current_turn
 
   def initialize
     @grid = Array.new(8) { Array.new(8) }
     @white_pieces = []
     @black_pieces = []
     populate_board
+
+    @previous = nil
+    @current_turn = :black
   end
 
   def move(start, end_pos)
@@ -25,13 +26,12 @@ class Board
   end
 
   def in_check?(color)
-
     if color == :black
       self.white_pieces.each do |piece|
         current_moves = piece.moves
         return true if current_moves.include?(self.black_king.pos)
       end
-      
+
     else
       self.black_pieces.each do |piece|
         current_moves = piece.moves
@@ -42,8 +42,41 @@ class Board
     false
   end
 
+  def checkmate?(color)
+    return false unless self.in_check?(color)
+    self.white_pieces.each do |piece|
 
-  def checkmate?
+      current_moves = piece.moves
+      current_moves.each do |move|
+
+        temp_board_update(self, move, piece)
+        if !self.in_check?(color)
+          self.undo
+          return false
+        end
+        self.undo
+      end
+    end
+    true
+  end
+
+  def temp_board_update(board, move, piece)
+    @current_piece = piece
+    @old_position = piece.pos
+    @new_position = move
+    if board[move].nil?
+      @replaced_piece = nil
+    else
+      @replaced_piece = board[move]
+    end
+
+    board[move] = piece
+    board[piece.pos] = nil
+  end
+
+  def undo
+    self[self.old_position] = self.current_piece
+    self[self.new_position] = self.replaced_piece
   end
 
   def valid_move?(start, end_pos)
@@ -73,6 +106,7 @@ class Board
 
   def create_pawn_rows
     @grid[1].each_index do |i|
+      next if i == 3 || i == 4
       new_pawn = create_new_piece([1, i], :p)
       self[[1, i]] = new_pawn
       self.white_pieces << new_pawn
@@ -94,7 +128,6 @@ class Board
       nnew_piece = create_new_piece([7, i], piece, :black)
       self[[7, i]] = new_piece
       self.black_pieces << new_piece
-
     end
   end
 

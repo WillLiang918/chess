@@ -11,11 +11,10 @@ class Display
     @board = board
     @cursor = [0,0]
     @selected_piece = nil
-    # @selected = false
   end
 
   def render
-    # system("clear")
+    system("clear")
     grid = build_grid(self.board)
     grid.each { |row| puts row }
   end
@@ -67,27 +66,16 @@ class Display
     case keystroke
     when :space, :return
 
-      p !self.board[self.cursor].nil?
-      p self.selected_piece.nil?
-
       if !self.board[self.cursor].nil? && self.selected_piece.nil?
-
-        p "1"
-
         self.selected_piece = self.board[self.cursor]
 
-
       elsif !self.selected_piece.nil?
-        p "2"
-
-        # temp_piece = selected_piece.dup
         self.board[self.selected_piece.pos] = nil
         self.board[self.cursor] = self.selected_piece
 
         self.selected_piece = nil
       end
 
-      p "3"
     when :left, :right, :up, :down
       self.cursor = Cursorable::update_pos(Cursorable::MOVES[keystroke], self.cursor, self.board)
     else
@@ -96,47 +84,3 @@ class Display
     p selected_piece
   end
 end
-
-
-b = Board.new
-d = Display.new(b)
-
-pos = [2,2]
-p b.white_pieces.each { |n| print n.class}
-p b.white_pieces.length
-# k = King.new(pos, b, :k, :white)
-# p k.moves
-
-# b[[1,2]] = nil
-# pawn = Pawn.new(pos, b, :p, :black)
-# p pawn.moves
-
-d.render
-
-# pos2 = [4,4]
-# q = Queen.new(pos2, b, :q, :black)
-# bi = Bishop.new(pos, b, :q, :black)
-# r = Rook.new(pos, b, :q, :black)
-# horse = Knight.new(pos, b, :h, :white)
-#
-# b[pos] = r
-# b[pos2] = q
-# d.render
-#
-# p "Rook: #{r.moves}"
-# puts
-# p "Queen: #{q.moves}"
-# p r.moves.length
-# p q.moves.length
-#p horse.moves
-# p horse.moves.length
-
-#
-10.times do
-  d.render
-  d.get_keystroke
-  puts "\n"
-end
-#
-# p d.board.white_king.pos
-# p b.black_king.pos

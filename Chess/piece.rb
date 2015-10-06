@@ -211,5 +211,4 @@ class Pawn < Piece
 
     possible_moves
   end
-
 end
